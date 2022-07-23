@@ -1,15 +1,16 @@
-// import { useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import React from 'react'
+import Home from './components/Home'
+import Questions from './components/Questions'
 
 function App() {
-  // const [count, setCount] = useState(0)
-
+  const [quiz, setQuiz] = useState(false)
+  
   return (
-    <div className="App">
-      <div className='bg-slate-400'>
-        hello world
-    </div>
+    <div className="App bg-blue-50">
+      {!quiz && <Home setQuiz={setQuiz} quiz={quiz}/>}
+      {quiz && <Questions setQuiz={setQuiz} quiz={quiz} />}
     </div>
   )
 }
