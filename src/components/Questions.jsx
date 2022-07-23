@@ -8,7 +8,7 @@ function Questions(props) {
 
     const [allQuestions,setAllQuestions] = useState([])
     const [isCheck,setIsCheck] = useState(false)
-    const [handleRestart, setHandleRestart] = React.useState(false)
+    const [handleRestart, setHandleRestart] = useState(false)
 
     useEffect(() => {
         fetch("https://opentdb.com/api.php?amount=5&category=11&difficulty=easy&type=multiple")
@@ -19,8 +19,8 @@ function Questions(props) {
                     question: decode(item.question),
                     correct_answer: decode(item.correct_answer),
                     options: shuffle(decodeArray([item.correct_answer, ...item.incorrect_answers])),
-                    selectedIndex: -1
-
+                    selectedIndex: -1,
+                    attempted : -1
                 }
             })))
 
@@ -30,7 +30,7 @@ function Questions(props) {
         if(!isCheck){
             setAllQuestions(prev => prev.map(item => {
                 return item.id === id ?
-                {...item,selectedIndex:index}:
+                {...item,selectedIndex:index,attempted:1}:
                 item
             }))
         }
@@ -68,6 +68,21 @@ function Questions(props) {
         return score
     }
 
+    function attemptedAll(){
+
+        let attemtNumber = 0
+        for(const item of allQuestions){
+            if(item.attempted === 1){
+                attemtNumber++
+            }
+        }
+        if(attemtNumber>4){
+            setIsCheck(true)
+        }else{
+            alert("attempt all the questions")
+        }
+    }
+
     function restartGame() {
         setAllQuestions([])
         setHandleRestart(prev => !prev)
@@ -94,7 +109,7 @@ function Questions(props) {
             <div>{QuestionElements}</div>
             <div className="text-center">
                 {isCheck && <p className="font-bold">You scored {getScore()}/5 correct answers</p>}
-                {!isCheck && <button className=" border-1 text-indigo-100 py-0.5 px-2 rounded-lg font-mono bg-slate-800 mt-4 "  onClick={() => setIsCheck(true)}>Check answers</button>}
+                {!isCheck && <button className=" border-1 text-indigo-100 py-0.5 px-2 rounded-lg font-mono bg-slate-800 mt-4 "  onClick={() => attemptedAll()}>Check answers</button>}
                 {isCheck && <button className="border-1 text-indigo-100 py-0.5 px-2 rounded-lg font-mono bg-slate-800 mt-4" onClick={restartGame}>Play again</button>}
             </div>
         </div>
